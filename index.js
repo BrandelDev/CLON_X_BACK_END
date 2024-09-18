@@ -23,7 +23,7 @@ connectToDatabase();
 
 // Rutas
 app.get('/', (req, res) => {
-  res.send('Hello, World el jenkins!');
+  res.send('Hello, World el jen');
 });
 
 
