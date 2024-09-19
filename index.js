@@ -23,7 +23,7 @@ connectToDatabase();
 
 // Rutas
 app.get('/', (req, res) => {
-  res.send('Hello, World el jen');
+  res.send('Hello, World ejecutado desde el webhook');
 });
 
 
