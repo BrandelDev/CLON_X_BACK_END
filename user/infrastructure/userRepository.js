@@ -21,8 +21,14 @@ class UserRepository {
     return await User.find();
   }
 
-  async findByEmail(email) {
-    return await User.findOne({ email });
+  async findUserByEmail(email) {
+      try {
+            // Usando Mongoose para encontrar un usuario por email
+            return await User.findOne({ email });
+        } catch (error) {
+            console.error('Error in findUserByEmail:', error);
+            throw new Error('Error fetching user by email');
+        }
   }
 
   async findByUsername(username) {
