@@ -2,9 +2,9 @@ const express = require('express')
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 
-const { postList } = require('../user/interface/postController')
+
 const { SignUps, createUser } = require('../user/interface/signUpController')
-const { Followcontroller } = require('../user/interface/FollowController');
+
 const { login } = require('../user/interface/loginController');
 const { authMiddleware } = require('../routes/authMiddleware');
 const { createTweet, updateTweet, deleteTweet, likeTweet, retweetTweet, getTweets } = require('../tweets/interface/TweetController')
