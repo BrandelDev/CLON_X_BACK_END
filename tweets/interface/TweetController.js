@@ -4,9 +4,15 @@ const TweetRepository = require('../infrastructure/TweetRepository');
 const tweetRepository = new TweetRepository();
 const tweetService = new TweetService(tweetRepository);
 
-const getTweets = (request, response) => {
-  // Aquí podrías obtener todos los tweets o implementar paginación
-  response.json({ message: "Función para obtener tweets" });
+const getTweets = async (req, res) => {
+
+  try {
+    const tweets = await  tweetService.getTweets();
+    return res.status(200).json(tweets);
+  } catch (error) {
+    console.error('Error al obtener tweets:', error);
+    return res.status(500).json({ message: 'Error al obtener tweets' });
+  }
 }
 
 const createTweet = async (req, res) => {

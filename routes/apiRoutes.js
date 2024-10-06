@@ -59,11 +59,11 @@ router.post('/login',
 
 
 router.post('/tweet/create', authMiddleware, createTweet);
-router.get('/tweet/get:id', getTweets);
-// router.put('/tweet/update/:id', authMiddleware, updateTweet);
-// router.delete('/tweet/delete/:id', authMiddleware, deleteTweet);
-// router.post('/tweet/delete/:id/like', authMiddleware, likeTweet);
-// router.post('/tweet/delete/:id/retweet', authMiddleware, retweetTweet);
+router.get('/tweet/get',authMiddleware, getTweets);
+router.put('/tweet/update/:id', authMiddleware, updateTweet);
+router.delete('/tweet/delete/:id', authMiddleware, deleteTweet);
+router.post('/tweet/delete/:id/like', authMiddleware, likeTweet);
+router.post('/tweet / delete /:id/retweet', authMiddleware, retweetTweet);
 
 router.get('/post', postList)
 router.get('/user', SignUps)

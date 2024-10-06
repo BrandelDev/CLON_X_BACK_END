@@ -6,13 +6,22 @@ class TweetService {
   }
 
   async createTweet(tweetData) {
-    // Aquí puedes añadir lógica de negocio adicional antes de crear el tweet
-    // Por ejemplo, verificar el contenido, procesar hashtags, etc.
+
     const tweet = await this.tweetRepository.createTweet({
       ...tweetData,
       author: tweetData.author
     });
     return tweet;
+  }
+
+
+  async getTweets() {
+    const tweets = await this.tweetRepository.getTweets()
+
+    if (!tweets) {
+      throw new Error('Tweets not found')
+     }
+     return tweets
   }
 
   async getTweetById(id) {
