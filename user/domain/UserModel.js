@@ -9,11 +9,11 @@ const userSchema = new mongoose.Schema({
     },
 
     name: {
-        type:String,
+        type: String,
         required: true
     },
     lastName: {
-        type:String,
+        type: String,
         required: true
     },
     birthdate: Date,
@@ -32,7 +32,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
- 
+    
+    followers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    following: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+
     createdAt: {
         type: Date,
         default: Date.now
