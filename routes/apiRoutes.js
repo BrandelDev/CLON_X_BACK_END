@@ -6,6 +6,8 @@ const { postList } = require('../user/interface/postController')
 const { SignUps, createUser } = require('../user/interface/signUpController')
 const { Followcontroller } = require('../user/interface/FollowController');
 const { login } = require('../user/interface/loginController');
+const { authMiddleware } = require('../routes/authMiddleware');
+const { createTweet, updateTweet, deleteTweet, likeTweet, retweetTweet, getTweets } = require('../tweets/interface/TweetController')
 
 const users = [];
 
@@ -45,18 +47,23 @@ router.post('/login',
     try {
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
-       }
-       next();
+      }
+      next();
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: 'Internal server error' })
-     }
+    }
 
 
   }, login);
 
 
-
+router.post('/tweet/create', authMiddleware, createTweet);
+router.get('/tweet/get:id', getTweets);
+// router.put('/tweet/update/:id', authMiddleware, updateTweet);
+// router.delete('/tweet/delete/:id', authMiddleware, deleteTweet);
+// router.post('/tweet/delete/:id/like', authMiddleware, likeTweet);
+// router.post('/tweet/delete/:id/retweet', authMiddleware, retweetTweet);
 
 router.get('/post', postList)
 router.get('/user', SignUps)
