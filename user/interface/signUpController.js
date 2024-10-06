@@ -6,9 +6,6 @@ const userService = new UserService(userRepository);
 
 
 
-const SignUps = (request, response) => {
-  response.json(Sign)
-}
 
 createUser = async  (req, res) => {
   req.body;
@@ -32,5 +29,5 @@ createUser = async  (req, res) => {
 };
 
 module.exports = {
-  SignUps, createUser
+   createUser
 }

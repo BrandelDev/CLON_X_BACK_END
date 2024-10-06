@@ -26,6 +26,11 @@ app.get('/', (req, res) => {
   res.send('Hello, World ejecutado desde el webhook');
 });
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./swagger_output.json'); // Archivo generado
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
 
 
 

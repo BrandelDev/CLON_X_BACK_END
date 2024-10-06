@@ -1,15 +1,13 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 
-const { postList } = require('../user/interface/postController')
-const { SignUps, createUser } = require('../user/interface/signUpController')
-const { Followcontroller } = require('../user/interface/FollowController');
+// Importación de controladores
+const { createUser } = require('../user/interface/signUpController');
 const { login } = require('../user/interface/loginController');
 const { authMiddleware } = require('../routes/authMiddleware');
-const { createTweet, updateTweet, deleteTweet, likeTweet, retweetTweet, getTweets } = require('../tweets/interface/TweetController')
+const { createTweet, updateTweet, deleteTweet, likeTweet, retweetTweet, getTweets } = require('../tweets/interface/TweetController');
 
-const users = [];
 
 
 router.post('/signup',
@@ -18,54 +16,41 @@ router.post('/signup',
     body('email').isEmail().withMessage('Please provide a valid email'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
     body('avatarURL').isURL().withMessage('Avatar URL must be a valid URL'),
-    body('birthdate').notEmpty().withMessage('Birthdate is required').isDate().withMessage('Birthdate must be a valid date')]
-  , (req, res, next) => {
-    const errors = validationResult(req)
-    console.log(errors)
-
-    try {
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-      next();
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    body('birthdate').notEmpty().withMessage('Birthdate is required').isDate().withMessage('Birthdate must be a valid date')
+  ],
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-  }, createUser);
-
-
+    next();
+  },
+  createUser
+);
 
 router.post('/login',
   [
     body('email').notEmpty().isEmail().withMessage('Please provide a valid email'),
-    body('password').notEmpty().withMessage('Please provide a valid email')],
+    body('password').notEmpty().withMessage('Password is required')
+  ],
   (req, res, next) => {
-    const errors = validationResult(req)
-    console.log(errors);
-
-    try {
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
-      }
-      next();
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Internal server error' })
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-
-
-  }, login);
+    next();
+  },
+  login
+);
 
 
 router.post('/tweet/create', authMiddleware, createTweet);
-router.get('/tweet/get:id', getTweets);
-// router.put('/tweet/update/:id', authMiddleware, updateTweet);
-// router.delete('/tweet/delete/:id', authMiddleware, deleteTweet);
-// router.post('/tweet/delete/:id/like', authMiddleware, likeTweet);
-// router.post('/tweet/delete/:id/retweet', authMiddleware, retweetTweet);
+router.get('/tweet/get', authMiddleware, getTweets);
+router.put('/tweet/update/:id', authMiddleware, updateTweet);
+router.delete('/tweet/delete/:id', authMiddleware, deleteTweet);
+router.post('/tweet/:id/like', authMiddleware, likeTweet); // Corregido el espacio en la ruta
+router.post('/tweet/:id/retweet', authMiddleware, retweetTweet); // Corregido el espacio en la ruta
 
-router.get('/post', postList)
-router.get('/user', SignUps)
-router.get('/follow', Followcontroller)
+
+
 module.exports = router;

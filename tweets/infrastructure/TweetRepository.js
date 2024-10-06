@@ -11,6 +11,16 @@ class TweetRepository  {
     return await Tweet.findById(id).populate('author', 'username');
   }
 
+
+  async  getTweets() {
+      return Tweet.find()
+        .populate('author', 'username') 
+        .populate('likes', 'username') 
+        .populate('retweets', 'username') 
+        .populate('parentTweet') 
+        .exec(); 
+  }
+  
   async getTweetsByUser(userId) {
     return await Tweet.find({ author: userId }).sort({ createdAt: -1 }).populate('author', 'username');
   }
