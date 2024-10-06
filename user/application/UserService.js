@@ -1,13 +1,24 @@
 const User = require('../domain/UserModel');
+const bcrypt = require('bcryptjs');
+
 
 class UserService {
+
   constructor(userRepository) {
     this.userRepository = userRepository;
+    console.log('userRepository:', this.userRepository);
   }
 
   async createUser(userData) {
     try {
-      const user = new User(userData);
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(userData.password, salt);
+
+      const userDataWithHashedPasswrod = {
+        ...userData,
+        password: hashedPassword
+      }
+      const user = new User(userDataWithHashedPasswrod);
       return await user.save();
     } catch (error) {
       if (error.code === 11000) {
@@ -16,8 +27,14 @@ class UserService {
       throw error;
     }
   }
+
   async getUserById(userId) {
     return await this.userRepository.findById(userId);
+  }
+
+  async findUserByEmail(email) {
+    console.log(email)
+    return await this.userRepository.findUserByEmail(email);
   }
 
   async updateUser(userId, updateData) {
@@ -37,5 +54,7 @@ class UserService {
     return await this.userRepository.findAll();
   }
 }
+
+
 
 module.exports = UserService;
