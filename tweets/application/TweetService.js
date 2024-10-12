@@ -37,11 +37,15 @@ class TweetService {
   }
 
   async updateTweet(id, tweetData, userId) {
+    console.log('Esteeee es el user id')
+    console.log(userId)
     const tweet = await this.tweetRepository.getTweetById(id);
     if (!tweet) {
       throw new Error('Tweet not found');
     }
-    if (tweet.author.toString() !== userId) {
+    console.log('Este es el tweet')
+    console.log(tweet)
+    if (tweet.author._id.toString() !== userId) {
       throw new Error('Not authorized to update this tweet');
     }
     return await this.tweetRepository.updateTweet(id, tweetData);

@@ -12,6 +12,8 @@ const authMiddleware = (req, res, next) => {
     if (err) {
       return res.status(403).json({ message: 'Token is not valid' });
     }
+    
+    console.log(user)
 
     req.user = user; // El token decodificado contiene al usuario
     next();

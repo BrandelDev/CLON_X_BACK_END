@@ -3,4 +3,5 @@ module.exports = {
   moduleFileExtensions: ['js', 'json'],
   testMatch: ['**/*.test.js'], // Ajusta esto si usas un formato diferente como .spec.js
   transform: {},
+  moduleDirectories: ['node_modules'],
 }
