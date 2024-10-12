@@ -1,6 +1,8 @@
 const TweetService = require('../application/TweetService');
 const TweetRepository = require('../infrastructure/TweetRepository');
 
+
+
 const tweetRepository = new TweetRepository();
 const tweetService = new TweetService(tweetRepository);
 
@@ -17,7 +19,9 @@ const getTweets = async (req, res) => {
 
 const createTweet = async (req, res) => {
   const { content, media } = req.body;
-  const userId = req.user.userId;; // Asumiendo que tienes middleware de autenticación
+  console.log('este es este es el media')
+  console.log(media)
+  const userId = req.user.userId;;
   console.log("User ID:", userId); 
   const newTweet = {
     content,
@@ -52,7 +56,9 @@ const getTweetById = async (req, res) => {
 
 const updateTweet = async (req, res) => {
   try {
-    const updatedTweet = await tweetService.updateTweet(req.params.id, req.body, req.user.id);
+    const updatedTweet = await tweetService.updateTweet(req.params.id, req.body, req.user.userId);
+    console.log('Esteeee es el user id')
+    console.log(req.user.userId)
     res.json(updatedTweet);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -61,7 +67,8 @@ const updateTweet = async (req, res) => {
 
 const deleteTweet = async (req, res) => {
   try {
-    await tweetService.deleteTweet(req.params.id, req.user.id);
+    await tweetService.deleteTweet(req.params.id, req.user.userId);
+    console.log()
     res.status(204).send();
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -69,8 +76,10 @@ const deleteTweet = async (req, res) => {
 };
 
 const likeTweet = async (req, res) => {
+  debugger;
   try {
-    const tweet = await tweetService.likeTweet(req.params.id, req.user.id);
+    console.log(req)
+    const tweet = await tweetService.likeTweet(req.params.id, req.user.userId);
     res.json(tweet);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -79,7 +88,7 @@ const likeTweet = async (req, res) => {
 
 const retweetTweet = async (req, res) => {
   try {
-    const tweet = await tweetService.retweetTweet(req.params.id, req.user.id);
+    const tweet = await tweetService.retweetTweet(req.params.id,  req.user.userId);
     res.json(tweet);
   } catch (error) {
     res.status(400).json({ message: error.message });

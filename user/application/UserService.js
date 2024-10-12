@@ -53,6 +53,49 @@ class UserService {
   async getAllUsers() {
     return await this.userRepository.findAll();
   }
+
+  async getFollowers(userId) {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+        throw new Error('User not found');
+    }
+    return user.followers;
+}
+
+async getFollowings(userId) {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+        throw new Error('User not found');
+    }
+    return user.following;
+}
+
+async getFollowerCount(userId) {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+        throw new Error('User not found');
+    }
+    return user.followers.length;
+}
+
+async getFollowingCount(userId) {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+        throw new Error('User not found');
+    }
+    return user.following.length;
+}
+async followUser(userId, followerId) {
+  await this.userRepository.addFollower(userId, followerId);
+}
+
+
+async unfollowUser(userId, followerId) {
+  await this.userRepository.removeFollower(userId, followerId);
+}
+
+
+
 }
 
 

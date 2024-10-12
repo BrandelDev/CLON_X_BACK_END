@@ -37,11 +37,15 @@ class TweetService {
   }
 
   async updateTweet(id, tweetData, userId) {
+    console.log('Esteeee es el user id')
+    console.log(userId)
     const tweet = await this.tweetRepository.getTweetById(id);
     if (!tweet) {
       throw new Error('Tweet not found');
     }
-    if (tweet.author.toString() !== userId) {
+    console.log('Este es el tweet')
+    console.log(tweet)
+    if (tweet.author._id.toString() !== userId) {
       throw new Error('Not authorized to update this tweet');
     }
     return await this.tweetRepository.updateTweet(id, tweetData);
@@ -52,22 +56,22 @@ class TweetService {
     if (!tweet) {
       throw new Error('Tweet not found');
     }
-    if (tweet.author.toString() !== userId) {
+    if (tweet.author._id.toString() !== userId) {
       throw new Error('Not authorized to delete this tweet');
     }
     return await this.tweetRepository.deleteTweet(id);
   }
 
   async likeTweet(id, userId) {
+    console.error('Oeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+    console.log(id)
     const tweet = await this.tweetRepository.getTweetById(id);
     if (!tweet) {
       throw new Error('Tweet not found');
     }
     if (tweet.likes.includes(userId)) {
-      // Si ya le dio like, lo quitamos
       return await this.tweetRepository.updateTweet(id, { $pull: { likes: userId } });
     } else {
-      // Si no le ha dado like, lo añadimos
       return await this.tweetRepository.likeTweet(id, userId);
     }
   }
@@ -78,10 +82,8 @@ class TweetService {
       throw new Error('Tweet not found');
     }
     if (tweet.retweets.includes(userId)) {
-      // Si ya lo retweeteó, lo quitamos
       return await this.tweetRepository.updateTweet(id, { $pull: { retweets: userId } });
     } else {
-      // Si no lo ha retweeteado, lo añadimos
       return await this.tweetRepository.retweetTweet(id, userId);
     }
   }
