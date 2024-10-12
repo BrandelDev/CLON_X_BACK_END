@@ -8,7 +8,12 @@ const { login } = require('../user/interface/loginController');
 const { authMiddleware } = require('../routes/authMiddleware');
 const { createTweet, updateTweet, deleteTweet, likeTweet, retweetTweet, getTweets } = require('../tweets/interface/TweetController');
 
-
+const {
+  followUser,
+  unfollowUser,
+  getFollowerCount,
+  getFollowingCount
+} = require('../user/interface/followerController');
 
 router.post('/signup',
   [
@@ -48,9 +53,14 @@ router.post('/tweet/create', authMiddleware, createTweet);
 router.get('/tweet/get', authMiddleware, getTweets);
 router.put('/tweet/update/:id', authMiddleware, updateTweet);
 router.delete('/tweet/delete/:id', authMiddleware, deleteTweet);
-router.post('/tweet/like/:id', authMiddleware, likeTweet); // Corregido el espacio en la ruta
-router.post('/tweet/retweet/:id', authMiddleware, retweetTweet); // Corregido el espacio en la ruta
+router.post('/tweet/like/:id', authMiddleware, likeTweet); 
+router.post('/tweet/retweet/:id', authMiddleware, retweetTweet); 
 
+
+router.post('/follow', authMiddleware, followUser); 
+router.post('/unfollow', authMiddleware, unfollowUser); 
+router.get('/:userId/followers/count', authMiddleware, getFollowerCount); 
+router.get('/:userId/following/count', authMiddleware, getFollowingCount);
 
 
 module.exports = router;
