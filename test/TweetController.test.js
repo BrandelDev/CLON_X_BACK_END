@@ -193,6 +193,149 @@ describe('TweetController', () => {
       });
 
 
+      describe('updateTweet', () => {
+        it('debe actualizar un tweet y devolver el tweet actualizado', async () => {
+          const mockUpdatedTweet =  
+            {
+                _id: "670888077ad0789d8c7064e9",
+                content: "Este es un tweet de ejemplo",
+                author: {
+                    _id: "670884afacfd4495f11ea72d",
+                    username: "johndoe"
+                },
+                likes: [],
+                retweets: [],
+                media: [
+                    {
+                        type: "image",
+                        url: "https://ejemplo.com/imagen.jpg",
+                        _id: "670888077ad0789d8c7064ea"
+                    }
+                ],
+                createdAt: "2024-10-11T02:05:59.411Z",
+                __v: 0
+            };
+          TweetService.prototype.updateTweet.mockResolvedValue(mockUpdatedTweet);
+          req.params.id = '6709d687f0c61b9feb9d74a6';
+          await updateTweet(req, res);
+    
+          expect(TweetService.prototype.updateTweet).toHaveBeenCalledWith('6709d687f0c61b9feb9d74a6', req.body, '66f079d9032c601977bd0236');
+          expect(res.json).toHaveBeenCalledWith(mockUpdatedTweet);
+        });
+    
+        it('debe devolver un error 400 si ocurre un error', async () => {
+          const mockError = new Error('Error al actualizar tweet');
+          TweetService.prototype.updateTweet.mockRejectedValue(mockError);
+    
+          await updateTweet(req, res);
+    
+          expect(res.status).toHaveBeenCalledWith(400);
+          expect(res.json).toHaveBeenCalledWith({ message: mockError.message });
+        });
+      });
 
+
+      describe('deleteTweet', () => {
+        it('debe eliminar un tweet y devolver status 204', async () => {
+          TweetService.prototype.deleteTweet.mockResolvedValue();
+          req.params.id = '6702ca9001f349cc541499a4';
+          await deleteTweet(req, res);
+    
+          expect(res.status).toHaveBeenCalledWith(204);
+      
+        });
+    
+        it('debe devolver un error 400 si ocurre un error', async () => {
+          const mockError = new Error('Error al eliminar tweet');
+          TweetService.prototype.deleteTweet.mockRejectedValue(mockError);
+    
+          await deleteTweet(req, res);
+    
+          expect(res.status).toHaveBeenCalledWith(400);
+          expect(res.json).toHaveBeenCalledWith({ message: mockError.message });
+        });
+      });
+
+      describe('likeTweet', () => {
+        it('debe añadir un like a un tweet', async () => {
+          const mockTweet =  {
+            "_id": "6702ca9001f349cc541499a4",
+            "content": "Este es un tweet de ejemplo",
+            "author": {
+                "_id": "66f079d9032c601977bd0236",
+                "username": "BrandelDev"
+            },
+            "likes": [],
+            "retweets": [],
+            "media": [
+                {
+                    "type": "image",
+                    "url": "https://ejemplo.com/imagen.jpg",
+                    "_id": "6702ca9001f349cc541499a5"
+                }
+            ],
+            "createdAt": "2024-10-06T17:36:16.237Z",
+            "__v": 0
+        };
+          TweetService.prototype.likeTweet.mockResolvedValue(mockTweet);
+    
+          await likeTweet(req, res);
+    
+          expect(TweetService.prototype.likeTweet).toHaveBeenCalledWith(undefined,'66f079d9032c601977bd0236');
+          expect(res.json).toHaveBeenCalledWith(mockTweet);
+        });
+    
+        it('debe devolver un error 400 si ocurre un error', async () => {
+          const mockError = new Error("Cannot read properties of undefined (reading 'id')");
+          TweetService.prototype.likeTweet.mockRejectedValue(mockError);
+    
+          await likeTweet(req, res);
+    
+          expect(res.status).toHaveBeenCalledWith(400);
+          expect(res.json).toHaveBeenCalledWith({ message: mockError.message });
+        });
+      });
+
+      describe('retweetTweet', () => {
+        it('debe hacer retweet de un tweet', async () => {
+          const mockTweet = {
+            "_id": "6702ca9001f349cc541499a4",
+            "content": "Este es un tweet de ejemplo",
+            "author": {
+                "_id": "66f079d9032c601977bd0236",
+                "username": "BrandelDev"
+            },
+            "likes": [],
+            "retweets": [],
+            "media": [
+                {
+                    "type": "image",
+                    "url": "https://ejemplo.com/imagen.jpg",
+                    "_id": "6702ca9001f349cc541499a5"
+                }
+            ],
+            "createdAt": "2024-10-06T17:36:16.237Z",
+            "__v": 0
+        };
+          TweetService.prototype.retweetTweet.mockResolvedValue(mockTweet);
+    
+          await retweetTweet(req, res);
+    
+          expect(TweetService.prototype.retweetTweet).toHaveBeenCalledWith(undefined, '66f079d9032c601977bd0236');
+          expect(res.json).toHaveBeenCalledWith(mockTweet);
+        });
+    
+        it('debe devolver un error 400 si ocurre un error', async () => {
+          const mockError = new Error("Cannot read properties of undefined (reading 'id')");
+          TweetService.prototype.retweetTweet.mockRejectedValue(mockError);
+    
+          await retweetTweet(req, res);
+    
+          expect(res.status).toHaveBeenCalledWith(400);
+          expect(res.json).toHaveBeenCalledWith({ message: mockError.message });
+        });
+      });
+    
+  
 
 });

@@ -1,8 +1,8 @@
-const { createUser } = require('../interface/signUpController');
-const UserService = require('../application/UserService');
+const { createUser } = require('../user/interface/signUpController');
+const UserService = require('../user/application/UserService');
 const httpMocks = require('node-mocks-http');
 
-jest.mock('../application/UserService');
+jest.mock('../user/application/UserService');
 
 describe('User Controller', () => {
   let req, res;

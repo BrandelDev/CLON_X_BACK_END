@@ -48,8 +48,8 @@ router.post('/tweet/create', authMiddleware, createTweet);
 router.get('/tweet/get', authMiddleware, getTweets);
 router.put('/tweet/update/:id', authMiddleware, updateTweet);
 router.delete('/tweet/delete/:id', authMiddleware, deleteTweet);
-router.post('/tweet/:id/like', authMiddleware, likeTweet); // Corregido el espacio en la ruta
-router.post('/tweet/:id/retweet', authMiddleware, retweetTweet); // Corregido el espacio en la ruta
+router.post('/tweet/like/:id', authMiddleware, likeTweet); // Corregido el espacio en la ruta
+router.post('/tweet/retweet/:id', authMiddleware, retweetTweet); // Corregido el espacio en la ruta
 
 
 
