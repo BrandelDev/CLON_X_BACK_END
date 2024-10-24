@@ -9,6 +9,8 @@ class UserService {
     console.log('userRepository:', this.userRepository);
   }
 
+
+
   async createUser(userData) {
     try {
       const salt = await bcrypt.genSalt(10);
@@ -38,7 +40,7 @@ class UserService {
   }
 
   async updateUser(userId, updateData) {
-    const user = await this.userRepository.findById(userId);
+    const user = await this.userRepository.findOne({ userId });;
     if (!user) {
       throw new Error('User not found');
     }
@@ -55,44 +57,54 @@ class UserService {
   }
 
   async getFollowers(userId) {
-    const user = await this.userRepository.findById(userId);
+    const user = await this.userRepository.findOne({ userId });
     if (!user) {
-        throw new Error('User not found');
+      throw new Error('User not found');
     }
     return user.followers;
-}
+  }
 
-async getFollowings(userId) {
-    const user = await this.userRepository.findById(userId);
+  async getFollowings(userId) {
+    const user = await this.userRepository.findOne({ userId });
     if (!user) {
-        throw new Error('User not found');
+      throw new Error('User not found');
     }
     return user.following;
-}
+  }
 
-async getFollowerCount(userId) {
-    const user = await this.userRepository.findById(userId);
+  async getFollowerCount(userId) {
+    const user = await this.userRepository.findOne({ userId });
     if (!user) {
-        throw new Error('User not found');
+      throw new Error('User not found');
     }
     return user.followers.length;
-}
+  }
 
-async getFollowingCount(userId) {
-    const user = await this.userRepository.findById(userId);
+  async getFollowingCount(userId) {
+    const user = await this.userRepository.findOne({ userId });
     if (!user) {
-        throw new Error('User not found');
+      throw new Error('User not found');
     }
     return user.following.length;
-}
-async followUser(userId, followerId) {
-  await this.userRepository.addFollower(userId, followerId);
-}
+  }
+  async followUser(userId, followerId) {
+    await this.userRepository.addFollower(userId, followerId);
+  }
 
 
-async unfollowUser(userId, followerId) {
-  await this.userRepository.removeFollower(userId, followerId);
-}
+  async unfollowUser(userId, followerId) {
+    await this.userRepository.removeFollower(userId, followerId);
+  }
+
+  async getFollowersList(userId) {
+    return await this.userRepository.getFollowersWithDetails(userId);
+  }
+
+  async getFollowingsList(userId) { 
+    return await this.userRepository.getFollowingsList(userId)
+  }
+
+
 
 
 

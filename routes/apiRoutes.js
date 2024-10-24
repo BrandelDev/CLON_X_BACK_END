@@ -12,7 +12,8 @@ const {
   followUser,
   unfollowUser,
   getFollowerCount,
-  getFollowingCount
+  getFollowingCount,
+  getFollowersList
 } = require('../user/interface/followerController');
 
 router.post('/signup',
@@ -61,6 +62,7 @@ router.post('/follow', authMiddleware, followUser);
 router.post('/unfollow', authMiddleware, unfollowUser); 
 router.get('/:userId/followers/count', authMiddleware, getFollowerCount); 
 router.get('/:userId/following/count', authMiddleware, getFollowingCount);
+router.get('/users/:userId/followers',authMiddleware, getFollowersList)
 
 
 module.exports = router;
