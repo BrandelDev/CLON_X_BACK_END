@@ -100,7 +100,7 @@ class UserRepository {
     return followersDetails; // Retorna los detalles de los seguidores
 }
 
-async getFollowingWithDetails(userId) {
+async getFollowingsWithDetails(userId) {
   const user = await User.findOne({ userId });
 
   if (!user) {

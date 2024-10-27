@@ -101,7 +101,7 @@ class UserService {
   }
 
   async getFollowingsList(userId) { 
-    return await this.userRepository.getFollowingsList(userId)
+    return await this.userRepository.getFollowingsWithDetails(userId)
   }
 
 

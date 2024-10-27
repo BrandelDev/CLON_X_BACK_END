@@ -69,7 +69,7 @@ const getFollowingsList = async (req, res) => {
     const { userId } = req.params
     try {
         const followings = await userService.getFollowingsList(userId);
-        if (!followers) {
+        if (!followings) {
             return res.status(404).json({ error: 'User not found or no followers available' })
         }
         res.status(200).json({
