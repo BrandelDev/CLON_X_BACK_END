@@ -9,6 +9,7 @@
 **Integrantes:**
 - Victor Daniel Hermoso Lopera
 - Brandel Daniel Otero Arango
+- Esteban Jaramillo Vasquez
 
 ## Descripción
 
