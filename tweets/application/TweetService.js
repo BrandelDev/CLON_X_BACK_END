@@ -6,86 +6,116 @@ class TweetService {
   }
 
   async createTweet(tweetData) {
+    if (!tweetData || !tweetData.author) {
+      throw new ValidationError('Invalid tweet data or missing author');
+    }
 
-    const tweet = await this.tweetRepository.createTweet({
-      ...tweetData,
-      author: tweetData.author
-    });
-    return tweet;
+    return this.tweetRepository.createTweet(tweetData);
   }
 
-
   async getTweets() {
-    const tweets = await this.tweetRepository.getTweets()
-
-    if (!tweets) {
-      throw new Error('Tweets not found')
-     }
-     return tweets
+    const tweets = await this.tweetRepository.getTweets();
+    if (!tweets || tweets.length === 0) {
+      throw new NotFoundError('No tweets found');
+    }
+    return tweets;
   }
 
   async getTweetById(id) {
+    this.validateId(id);
+
     const tweet = await this.tweetRepository.getTweetById(id);
     if (!tweet) {
-      throw new Error('Tweet not found');
+      throw new NotFoundError('Tweet not found');
     }
     return tweet;
   }
 
   async getTweetsByUser(userId) {
-    return await this.tweetRepository.getTweetsByUser(userId);
+    this.validateId(userId);
+
+    return this.tweetRepository.getTweetsByUser(userId);
   }
 
   async updateTweet(id, tweetData, userId) {
-    console.log('Esteeee es el user id')
-    console.log(userId)
-    const tweet = await this.tweetRepository.getTweetById(id);
-    if (!tweet) {
-      throw new Error('Tweet not found');
-    }
-    console.log('Este es el tweet')
-    console.log(tweet)
-    if (tweet.author._id.toString() !== userId) {
-      throw new Error('Not authorized to update this tweet');
-    }
-    return await this.tweetRepository.updateTweet(id, tweetData);
+    this.validateId(id);
+    this.validateId(userId);
+
+    const tweet = await this.getTweetById(id);
+    this.checkAuthorization(tweet.author._id, userId);
+
+    return this.tweetRepository.updateTweet(id, tweetData);
   }
 
   async deleteTweet(id, userId) {
-    const tweet = await this.tweetRepository.getTweetById(id);
-    if (!tweet) {
-      throw new Error('Tweet not found');
-    }
-    if (tweet.author._id.toString() !== userId) {
-      throw new Error('Not authorized to delete this tweet');
-    }
-    return await this.tweetRepository.deleteTweet(id);
+    this.validateId(id);
+    this.validateId(userId);
+
+    const tweet = await this.getTweetById(id);
+    this.checkAuthorization(tweet.author._id, userId);
+
+    return this.tweetRepository.deleteTweet(id);
   }
 
   async likeTweet(id, userId) {
-    console.error('Oeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
-    console.log(id)
-    const tweet = await this.tweetRepository.getTweetById(id);
-    if (!tweet) {
-      throw new Error('Tweet not found');
-    }
-    if (tweet.likes.includes(userId)) {
-      return await this.tweetRepository.updateTweet(id, { $pull: { likes: userId } });
-    } else {
-      return await this.tweetRepository.likeTweet(id, userId);
-    }
+    this.validateId(id);
+    this.validateId(userId);
+
+    const tweet = await this.getTweetById(id);
+
+    const operation = tweet.likes.includes(userId)
+      ? { $pull: { likes: userId } }
+      : { $addToSet: { likes: userId } };
+
+    return this.tweetRepository.updateTweet(id, operation);
   }
 
   async retweetTweet(id, userId) {
-    const tweet = await this.tweetRepository.getTweetById(id);
-    if (!tweet) {
-      throw new Error('Tweet not found');
+    this.validateId(id);
+    this.validateId(userId);
+
+    const tweet = await this.getTweetById(id);
+
+    const operation = tweet.retweets.includes(userId)
+      ? { $pull: { retweets: userId } }
+      : { $addToSet: { retweets: userId } };
+
+    return this.tweetRepository.updateTweet(id, operation);
+  }
+
+  // Helper methods for validation and authorization
+  validateId(id) {
+    if (!id) {
+      throw new ValidationError('Invalid ID provided');
     }
-    if (tweet.retweets.includes(userId)) {
-      return await this.tweetRepository.updateTweet(id, { $pull: { retweets: userId } });
-    } else {
-      return await this.tweetRepository.retweetTweet(id, userId);
+  }
+
+  checkAuthorization(resourceAuthorId, userId) {
+    if (resourceAuthorId.toString() !== userId) {
+      throw new AuthorizationError('Not authorized to perform this action');
     }
+  }
+}
+
+// Custom error classes
+class ValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'ValidationError';
+  }
+}
+
+class NotFoundError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'NotFoundError';
+  }
+}
+
+class AuthorizationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'AuthorizationError';
   }
 }
 
