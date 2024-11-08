@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 
-// Importación de controladores
+// Import controllers
 const { createUser } = require('../user/interface/signUpController');
 const { login } = require('../user/interface/loginController');
 const { authMiddleware } = require('../routes/authMiddleware');
