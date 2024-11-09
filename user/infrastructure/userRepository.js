@@ -10,7 +10,10 @@ class UserRepository {
   }
 
   async findById(userId) {
-    return await User.findById(userId);
+    console.log('Encontrando by id', userId)
+    const userEncontrado = await User.findOne({ userId: userId })
+    console.log('Encontrando', userEncontrado)
+    return userEncontrado
   }
 
   async delete(userId) {
@@ -92,9 +95,6 @@ class UserRepository {
     // Obtiene los detalles de los seguidores utilizando el campo followers
     const followersDetails = await User.find({ userId: { $in: user.followers } }).exec();
 
-    if (!followersDetails || followersDetails.length === 0) {
-        throw new Error('Followers not found');
-    }
 
     console.log('User with followers:', followersDetails);
     return followersDetails; // Retorna los detalles de los seguidores
@@ -109,9 +109,6 @@ async getFollowingsWithDetails(userId) {
 
   const followingDetails = await User.find({ userId: { $in: user.following } }).exec();
 
-  if (!followingDetails) {
-      throw new Error('Following not found');
-  }
 
   console.log('User with following:', followingDetails);
   return followingDetails;

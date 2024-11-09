@@ -54,6 +54,17 @@ const getTweetById = async (req, res) => {
   }
 };
 
+const getTweetsByUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const tweets = await tweetRepository.getTweetsByUser(id);
+    res.status(200).json(tweets);
+  } catch (error) {
+    console.error("Error al obtener tweets del usuario:", error);
+    res.status(500).json({ message: "Error al obtener los tweets del usuario." });
+  }
+};
+
 const updateTweet = async (req, res) => {
   try {
     const updatedTweet = await tweetService.updateTweet(req.params.id, req.body, req.user.userId);
@@ -102,5 +113,6 @@ module.exports = {
   updateTweet,
   deleteTweet,
   likeTweet,
-  retweetTweet
+  retweetTweet,
+  getTweetsByUser
 }

@@ -51,12 +51,13 @@ const getFollowersList = async (req, res) => {
     try {
         const followers = await userService.getFollowersList(userId);
         if (!followers) {
-            return res.status(404).json({ error: 'User not found or no followers available' })
+            return res.status(200).json({followers: []});
         }
         res.status(200).json({
             followers: followers.map(follower => ({
                 username: follower.username,
-                userId: follower.userId
+                userId: follower.userId,
+                avatarURL: follower.avatarURL
             }))
         });
     } catch (error) { 
@@ -70,12 +71,13 @@ const getFollowingsList = async (req, res) => {
     try {
         const followings = await userService.getFollowingsList(userId);
         if (!followings) {
-            return res.status(404).json({ error: 'User not found or no followers available' })
+            return res.status(200).json({followings: []})
         }
         res.status(200).json({
-            followers: followings.map(following => ({
+            followings: followings.map(following => ({
                 username: following.username,
-                userId: following.userId
+                userId: following.userId,
+                avatarURL: following.avatarURL
             }))
         });
     } catch (error) { 

@@ -1,28 +1,70 @@
 // repositories/TweetRepository.js
 const Tweet = require('../domain/TweetModel');
+const User = require('../../user/domain/UserModel');
 
-class TweetRepository  {
+
+class TweetRepository {
+
+ 
   async createTweet(tweetData) {
     const tweet = new Tweet(tweetData);
     return await tweet.save();
   }
 
   async getTweetById(id) {
-    return await Tweet.findById(id).populate('author', 'username');
+    return await Tweet.findById(id).populate('author', 'UserId');
   }
 
 
-  async  getTweets() {
-      return Tweet.find()
-        .populate('author', 'username') 
-        .populate('likes', 'username') 
-        .populate('retweets', 'username') 
-        .populate('parentTweet') 
-        .exec(); 
+  async getTweets() {
+    try {
+      const tweets = await Tweet.find().exec();
+      console.log(tweets);
+
+      const userIds = tweets.map((tweet) => tweet.author);
+   
+      
+      const users = await User.find({ userId: { $in: userIds } }).select('username avatarURL userId');
+      console.log('Los users')
+      console.log(users)
+      
+      
+      const userMap = {};
+      users.forEach(user => {
+        userMap[user.userId] = user;
+      });
+
+      console.log(userMap)
+      
+      const tweetsWithAuthor = tweets.map(tweet => ({
+        ...tweet.toObject(),
+        author: userMap[tweet.author] || null
+      }));
+      return tweetsWithAuthor;
+    } catch (error) {
+      console.error("Error al obtener tweets:", error);
+      throw error;
+    }
   }
-  
+
   async getTweetsByUser(userId) {
-    return await Tweet.find({ author: userId }).sort({ createdAt: -1 }).populate('author', 'username');
+    try {
+      const tweets = await Tweet.find({ author: userId }).exec();
+      console.log('Tweets del usuario:', tweets);
+
+      const user = await User.findOne({ userId }).select('username avatarURL userId');
+      console.log('Detalles del usuario:', user);
+
+      const tweetsWithAuthor = tweets.map(tweet => ({
+        ...tweet.toObject(),
+        author: user || null
+      }));
+
+      return tweetsWithAuthor;
+    } catch (error) {
+      console.error("Error al obtener tweets del usuario:", error);
+      throw error;
+    }
   }
 
   async updateTweet(id, tweetData) {
@@ -34,7 +76,7 @@ class TweetRepository  {
   }
 
   async likeTweet(id, userId) {
-    
+
     return await Tweet.findByIdAndUpdate(id, { $addToSet: { likes: userId } }, { new: true });
   }
 

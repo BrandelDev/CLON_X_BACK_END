@@ -38,7 +38,8 @@ const login = async (req, res) => {
             user: {
                 id: user.userId,
                 email: user.email,
-                username: user.username
+                username: user.username,
+                avatarURL: user.avatarURL
             }
         });
 
@@ -48,6 +49,30 @@ const login = async (req, res) => {
     };
 };
 
+
+const refreshToken = async (req, res) => {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+        return res.status(401).json({ error: 'No refresh token provided' });
+    }
+
+    try {
+        // Verificar el `refreshToken`
+        const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+        const newAccessToken = jwt.sign(
+            { userId: decoded.userId, email: decoded.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '15m' }
+        );
+
+        res.status(200).json({
+            accessToken: newAccessToken
+        });
+    } catch (error) {
+        return res.status(403).json({ error: 'Invalid refresh token' });
+    }
+};
 module.exports = {
-    login
+    login,
+    refreshToken
 };

@@ -26,11 +26,11 @@ const tweetSchema = new mongoose.Schema({
   media: [{
     type: {
       type: String,
-      required: true
+      required: false
     },
     url: {
       type: String,
-      required: true
+      required: false
     }
   }],
   createdAt: {

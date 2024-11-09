@@ -4,9 +4,9 @@ const { body, validationResult } = require('express-validator');
 
 // Importación de controladores
 const { createUser } = require('../user/interface/signUpController');
-const { login } = require('../user/interface/loginController');
+const { login, refreshToken } = require('../user/interface/loginController');
 const { authMiddleware } = require('../routes/authMiddleware');
-const { createTweet, updateTweet, deleteTweet, likeTweet, retweetTweet, getTweets } = require('../tweets/interface/TweetController');
+const { createTweet, updateTweet, deleteTweet, likeTweet, retweetTweet, getTweets, getTweetById, getTweetsByUser } = require('../tweets/interface/TweetController');
 
 const {
   followUser,
@@ -14,7 +14,8 @@ const {
   getFollowerCount,
   getFollowingCount,
   getFollowersList,
-  getFollowingsList
+  getFollowingsList,
+  
 } = require('../user/interface/followerController');
 
 router.post('/signup',
@@ -50,13 +51,17 @@ router.post('/login',
   login
 );
 
+router.post('/refreshToken', refreshToken);
+
 
 router.post('/tweet/create', authMiddleware, createTweet);
-router.get('/tweet/get', authMiddleware, getTweets);
+router.get('/tweet/get/:id', authMiddleware, getTweetById);
+router.get('/tweet/get', authMiddleware, getTweets );
 router.put('/tweet/update/:id', authMiddleware, updateTweet);
 router.delete('/tweet/delete/:id', authMiddleware, deleteTweet);
 router.post('/tweet/like/:id', authMiddleware, likeTweet); 
 router.post('/tweet/retweet/:id', authMiddleware, retweetTweet); 
+router.get('/tweet/tweetsByUser/:id', authMiddleware, getTweetsByUser);
 
 
 router.post('/follow', authMiddleware, followUser); 
@@ -65,6 +70,7 @@ router.get('/:userId/followers/count', authMiddleware, getFollowerCount);
 router.get('/:userId/following/count', authMiddleware, getFollowingCount);
 router.get('/users/:userId/followers',authMiddleware, getFollowersList)
 router.get('/users/:userId/followings', authMiddleware, getFollowingsList);
+
 
 
 

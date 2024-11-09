@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    avatarUrl: String,
+    avatarURL: String,
     email: {
         type: String,
         required: true,
